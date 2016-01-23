@@ -116,13 +116,6 @@ Parse.Cloud.define("getNewsItems", function(request, response) {
 });
 
 
-
-            
-
-
-
-
-
 Parse.Cloud.define("getSchemas", function(request, response) {
 
     var city = request.params.city;
