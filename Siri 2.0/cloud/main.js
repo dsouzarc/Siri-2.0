@@ -41,22 +41,37 @@ Parse.Cloud.define("getSchemas", function(request, response) {
     };
 
     everyBlock.getObjects(parameters).then(function(httpResponse) {
-        console.log(httpResponse);
-        var Schema = new Parse.Object.extend("Schemas");
+
+        var Schema = Parse.Object.extend("Schemas");
+
         for(var i = 0; i < httpResponse.length; i++) {
             var schema = new Schema();
+
             var schemaJSON = httpResponse[i];
+            schema.set("city", "chicago");
             for(property in schemaJSON) {
-                schema.set(property, schemaJSON[property]);
+                if(property.localeCompare("id")) {
+                    console.log(property);
+                    schema.set(property, schemaJSON[property]);
+                }
+                else {
+                    schema.set("schemaId", schemaJSON[property].toString());
+                }
             }
+
+            console.log(schema);
+            console.log("One schema");
 
             schema.save(null, {
                 success: function(result) {
+                    console.log("Saved schemea");
                 }, 
-                error:function(schema, error) {
+                error: function(schema, error) {
                     console.log(error.message);
+                    response.error(error.message);
                 }
             });
+            console.log("Finished saving");
         }
         response.success("Got schemas");
     }, function(httpResponse) {
@@ -66,7 +81,7 @@ Parse.Cloud.define("getSchemas", function(request, response) {
 });
 
 
-Parse.Cloud.beforeSave("Metro", function(request, response) {
+Parse.Cloud.beforeSave("Hello", function(request, response) {
     var query = new Parse.Query("Metro");
     query.equalTo("metro_name", request.object.get("metro_name"));
     query.first({

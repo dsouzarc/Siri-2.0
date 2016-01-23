@@ -12,14 +12,11 @@ module.exports = {
             followRedirects: true
         }).then(function(httpResponse) {
             console.log(httpResponse);
-            console.log("FIRST");
+            console.log("GOT THIS");
             return httpResponse.data;
             if(options && options.success) {
             }
         }, function(httpResponse) {
-            console.log(httpResponse);
-            console.log("SECOND");
-            console.log(httpResponse);
             if (options && options.error) {
                 options.error(httpResponse);
             }
