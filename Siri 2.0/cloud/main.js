@@ -29,7 +29,7 @@ Parse.Cloud.define("getMetros", function(request, response) {
     );
 });
 
-Parse.Cloud.beforeSave("Metro", function(request, response) {
+Parse.Cloud.beforeSave("Metros", function(request, response) {
     var query = new Parse.Query(Metro);
     query.equalTo("metro_name", request.object.get("metro_name"));
     query.first({
