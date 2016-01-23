@@ -34,7 +34,14 @@ Parse.Cloud.define("getMetros", function(request, response) {
 
 Parse.Cloud.define("getSchemas", function(request, response) {
 
-    everyBlock.getSchemas(request.params.metro_name).then(function(httpResponse) {
+    parameters = {
+        "url": "https://api.everyblock.com/content/chicago/schemas?token=fd5f0d8fc74fd048fbb811ee29215be5fef04274",
+        "method": "GET",
+        "body": {}
+    };
+
+    everyBlock.getObjects(parameters).then(function(httpResponse) {
+        console.log(httpResponse);
         var Schema = new Parse.Object.extend("Schemas");
         for(var i = 0; i < httpResponse.length; i++) {
             var schema = new Schema();
@@ -53,8 +60,8 @@ Parse.Cloud.define("getSchemas", function(request, response) {
         }
         response.success("Got schemas");
     }, function(httpResponse) {
-        console.error(httpResponse);
-        response.error("Something went wrong");
+        console.log(httpResponse);
+        response.error(httpResponse);
     });
 });
 
