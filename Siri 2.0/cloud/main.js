@@ -88,9 +88,9 @@ Parse.Cloud.define("getSchemas", function(request, response) {
     });
 });
 
-Parse.Cloud.beforeSave("OldSchemas", function(request, response) {
+Parse.Cloud.beforeSave("Schemas", function(request, response) {
 
-    var Schema = Parse.Object.extend("OldSchemas");
+    var Schema = Parse.Object.extend("Schemas");
     var query = new Parse.Query(Schema);
     query.equalTo("city", request.object.get("city"));
     query.equalTo("schemaId", request.object.get("schemaId"));
