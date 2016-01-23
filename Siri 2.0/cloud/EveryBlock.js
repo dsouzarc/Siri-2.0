@@ -1,5 +1,26 @@
 module.exports = {
 
+    getObjects:function(parameters, options) {
+        requestURL = parameters["url"];
+        requestBody = parameters["body"];
+        requestType = parameters["method"];
+
+        return Parse.Cloud.httpRequest({
+            method: requestType,
+            url: requestURL,
+            body: requestBody,
+        }).then(function(httpResponse) {
+            return httpResponse.data;
+            if(options && options.success) {
+            }
+        }, function(httpResponse) {
+            console.log(httpResponse);
+            if (options && options.error) {
+                options.error(httpResponse);
+            }
+        });
+    },
+
     getMetros: function(options) {
         return Parse.Cloud.httpRequest({
             method: "GET",

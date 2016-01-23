@@ -3,7 +3,13 @@ var everyBlock = require('cloud/EveryBlock.js');
 var Metro = Parse.Object.extend("Metro");
 
 Parse.Cloud.define("getMetros", function(request, response) {
-    everyBlock.getMetros().then(function(httpResponse) {
+    parameters = {
+        "url": "https://api.everyblock.com/content/?token=fd5f0d8fc74fd048fbb811ee29215be5fef04274",
+        "method": "GET",
+        "body": {}
+    };
+
+    everyBlock.getObjects(parameters).then(function(httpResponse) {
         for(var i = 0; i < httpResponse.length; i++) {
             var metro = new Metro();
             var metroJSON = httpResponse[i];
@@ -21,7 +27,7 @@ Parse.Cloud.define("getMetros", function(request, response) {
         response.success("Got metros");
         }, function(httpResponse) {
             console.error(httpResponse);
-            response.error("Uh oh, something went wrong");
+            response.error(httpResponse);
         }
     );
 });
