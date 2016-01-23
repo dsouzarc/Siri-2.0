@@ -35,7 +35,7 @@ Parse.Cloud.define("getMetros", function(request, response) {
 
 Parse.Cloud.define("getNewsItems", function(request, response) {
 
-    var city = "chicago"; //request.params.city;
+    var city = "boston"; //request.params.city;
 
     var url =  "https://api.everyblock.com/content/" + city + "/topnews?token=fd5f0d8fc74fd048fbb811ee29215be5fef04274";
 
@@ -59,6 +59,7 @@ Parse.Cloud.define("getNewsItems", function(request, response) {
         var newsItems = [];
         var results = httpResponse['results'];
 
+
         for(var i = 0; i < results.length; i++) {
             var newsItem = new NewsItem();
             var newsItemJSON = results[i];
@@ -76,8 +77,6 @@ Parse.Cloud.define("getNewsItems", function(request, response) {
                         newsItem.set("subpropertyId", property[subproperty] + '');
                     }
                     else {
-                        console.log(property);
-                        console.log(property[subproperty]);
                         newsItem.set(subproperty, property[subproperty] + '');
                     }
                 }
@@ -105,10 +104,13 @@ Parse.Cloud.define("getNewsItems", function(request, response) {
                 "url": nextURL,
                 "city": city
             };
-            Parse.Cloud.run("getNewsItems", params);
+            console.log("GOING TO THE NEXT ONE");
+            Parse.Promise.when(Parse.Cloud.run("getNewsItems", params).then(function(param1, param2) {
+                console.log(nextURL);
+                response.success("Got newsitems");
+            }));
         }
 
-        response.success("Got newsitems");
     }, function(httpResponse) {
         console.log(httpResponse);
         response.error(httpResponse);
