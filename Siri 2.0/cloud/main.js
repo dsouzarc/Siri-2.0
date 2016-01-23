@@ -66,10 +66,20 @@ Parse.Cloud.define("getSchemas", function(request, response) {
 
             schemas.push(schema);
         }
-
+        
+        Parse.Object.saveAll(schemas, {
+            success: function(objs) {
+                console.log("Successfully saved " + schemas.length);
+            },
+            error: function(error) { 
+                console.log(error);
+            }
+        });
         Parse.Promise.when(schemas.map(function(object) {
             object.save(null, {wait: true});
         }));
+        
+        console.log("FINISHED");
 
         response.success("Got schemas");
     }, function(httpResponse) {
