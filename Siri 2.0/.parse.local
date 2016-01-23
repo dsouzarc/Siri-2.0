@@ -1,0 +1,10 @@
+{
+  "applications": {
+    "Siri 2.0": {
+      "applicationId": "HRTZVnVQsyRlafoDu9k8kxJE7iDmlY21eAwI4Jwr"
+    },
+    "_default": {
+      "link": "Siri 2.0"
+    }
+  }
+}
