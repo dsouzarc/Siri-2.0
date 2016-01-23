@@ -33,9 +33,99 @@ Parse.Cloud.define("getMetros", function(request, response) {
     );
 });
 
+Parse.Cloud.define("getNewsItems", function(request, response) {
+
+    var city = "chicago"; //request.params.city;
+
+    var url =  "https://api.everyblock.com/content/" + city + "/topnews?token=fd5f0d8fc74fd048fbb811ee29215be5fef04274";
+
+    if ('schema' in request.params) {
+        url = url + "&schema=" + request.params.schema;
+    }
+
+    if ('url' in request.params) {
+        url = request.params.url;
+    }
+
+    var parameters = {
+        "url": url,
+        "method": "GET",
+        "body": {}
+    };
+
+    everyBlock.getObjects(parameters).then(function(httpResponse) {
+
+        var NewsItem = Parse.Object.extend("NewsItems");
+        var newsItems = [];
+        var results = httpResponse['results'];
+
+        for(var i = 0; i < results.length; i++) {
+            var newsItem = new NewsItem();
+            var newsItemJSON = results[i];
+
+            newsItem.set("city", city);
+            for(property in newsItemJSON) {
+                if(property === "id") {
+                    newsItem.set("newsItemId", newsItemJSON[property] + '');
+                }
+                else {
+                    newsItem.set(property, newsItemJSON[property] + '');
+                }
+                for(subproperty in property) {
+                    if(subproperty === "id") {
+                        newsItem.set("subpropertyId", property[subproperty] + '');
+                    }
+                    else {
+                        console.log(property);
+                        console.log(property[subproperty]);
+                        newsItem.set(subproperty, property[subproperty] + '');
+                    }
+                }
+            }
+
+            newsItems.push(newsItem);
+        }
+        Parse.Object.saveAll(newsItems, {
+            success: function(objs) {
+                console.log("Successfully saved " + newsItems.length);
+            },
+            error: function(error) { 
+                console.log(error);
+            }
+        });
+        Parse.Promise.when(newsItems.map(function(object) {
+            object.save(null, {wait: true});
+        }));
+        
+        console.log("FINISHED");
+
+        if('next' in httpResponse) {
+            var nextURL = httpResponse['next'];
+            var params = {
+                "url": nextURL,
+                "city": city
+            };
+            Parse.Cloud.run("getNewsItems", params);
+        }
+
+        response.success("Got newsitems");
+    }, function(httpResponse) {
+        console.log(httpResponse);
+        response.error(httpResponse);
+    });
+});
+
+
+
+            
+
+
+
+
+
 Parse.Cloud.define("getSchemas", function(request, response) {
 
-    city = request.params.city;
+    var city = request.params.city;
 
     parameters = {
         "url": "https://api.everyblock.com/content/" + city + "/schemas?token=fd5f0d8fc74fd048fbb811ee29215be5fef04274",
