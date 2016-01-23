@@ -35,11 +35,14 @@ Parse.Cloud.define("getMetros", function(request, response) {
 
 Parse.Cloud.define("getSchemas", function(request, response) {
 
+    city = request.params.city;
+
     parameters = {
-        "url": "https://api.everyblock.com/content/chicago/schemas?token=fd5f0d8fc74fd048fbb811ee29215be5fef04274",
+        "url": "https://api.everyblock.com/content/" + city + "/schemas?token=fd5f0d8fc74fd048fbb811ee29215be5fef04274",
         "method": "GET",
         "body": {}
     };
+
 
     everyBlock.getObjects(parameters).then(function(httpResponse) {
 
@@ -53,7 +56,7 @@ Parse.Cloud.define("getSchemas", function(request, response) {
             console.log(i);
 
             var schemaJSON = httpResponse[i];
-            schema.set("city", "chicago");
+            schema.set("city", city);
             for(property in schemaJSON) {
                 if(property === "id") {
                     console.log("Caught id #: " + i);
